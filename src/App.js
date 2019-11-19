@@ -78,9 +78,6 @@ class Test extends Component {
   render() {
     return (
         <div>
-          <div>
-            <input placeholder='please enter public key'/>
-          </div>
           <QrReader
               delay={300}
               onError={this.handleError}
