@@ -11,7 +11,7 @@
     "serve": "^11.2.0"
   },
   "scripts": {
-    "start": "npm run build && serve -s build",
+    "start": "serve -s build",
     "ex": "HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
