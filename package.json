@@ -7,10 +7,12 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-qr-reader": "^2.2.1",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "serve": "^11.2.0"
   },
   "scripts": {
-    "start": "HTTPS=true react-scripts start",
+    "start": "npm run build && serve -s build",
+    "ex": "HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
