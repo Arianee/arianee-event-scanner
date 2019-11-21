@@ -1,5 +1,5 @@
 import React from 'react'
-import {STATES} from "./state";
+import {STATES} from "../pages/state";
 
 export default function ValidationBlock({state,title}){
 
