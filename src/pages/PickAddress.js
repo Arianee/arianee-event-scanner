@@ -62,6 +62,7 @@ class PickAddress extends Component {
                         {this.state.addresses.length > 0
                             && this.state.addresses.map(opt => {
                                 return <div
+                                    data-address={opt.id}
                                     className="btn btn-outline-warning btn-lg btn-block border-primary p-2 mt-2"
                                     onClick={() => this.selectAddress(opt.id)} key={opt.id}>
                                     {opt.name}
