@@ -64,7 +64,7 @@ class Scan extends Component {
                 this.fetchingSuccess(STATES.loading);
                 const { content, issuer } = await wallet.methods.getCertificate(link.certificateId, link.passphrase, { content: true, issuer: true });
                 this.fetchingSuccess(STATES.valid);
-                if (content.isAuthentic && issuer.identity && issuer.identity.address === this.address) {
+                if (content && content.isAuthentic && issuer && issuer.identity && issuer.identity.address === this.address) {
                     this.canAccess(STATES.valid);
                 } else {
                     this.canAccess(STATES.unvalid);
