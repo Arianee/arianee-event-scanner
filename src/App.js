@@ -16,7 +16,7 @@ export default function App() {
                 <Route exact path="/">
                     <PickAddress />
                 </Route>
-                <Route exact path="/scan/:address" >
+                <Route exact path="/scan/:address/:network" >
                     <Scan />
                 </Route>
         </Router>

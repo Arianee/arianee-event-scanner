@@ -13,7 +13,7 @@ class Scan extends Component {
         this.address = this.props.match.params.address;
 
         const searchParams = new URLSearchParams(window.location.search)
-        const network = searchParams.get('network') || NETWORK.mainnet;
+        const network = this.props.match.params.network || NETWORK.mainnet;
 
         this.wallet = new Arianee().init(network)
             .then(aria => aria.fromRandomMnemonic());

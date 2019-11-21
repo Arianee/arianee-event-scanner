@@ -9,19 +9,29 @@ class PickAddress extends Component {
         super(props)
         this.state = { addresses: [] };
 
-        this.wallet = new Arianee().init(NETWORK.mainnet)
+
+    }
+
+    selectNetwork = (network) => {
+        this.setState({
+            network,
+            addresses: []
+        });
+
+        this.getAddressAutocomplete(network);
+    }
+
+    selectAddress = (address) => {
+        const { network } = this.state;
+        this.props.history.push(`/scan/${address}/${network}`)
+    }
+
+    getAddressAutocomplete = async (network) => {
+
+        const wallet = new Arianee().init(network)
             .then(aria => aria.fromRandomMnemonic());
-        this.getAddressAutocomplete();
 
-    }
-
-    selectAddress = (event) => {
-        const address = event.target.value;
-        this.props.history.push(`/scan/${address}`)
-    }
-
-    getAddressAutocomplete = async () => {
-        const wallet1 = await this.wallet;
+        const wallet1 = await wallet;
 
         const events = await wallet1.contracts.identityContract.getPastEvents("AddressApprovedAdded", { fromBlock: 1 });
         //console.log(events)
@@ -40,12 +50,25 @@ class PickAddress extends Component {
 
     render() {
         return (
-            <div>
-                {this.state.addresses.length === 0 && <div className="lds-hourglass"></div>}
-                {this.state.addresses.length > 0
-                    && <select onChange={this.selectAddress}>
-                        {this.state.addresses.map(opt => <option key={opt.id} value={opt.id}>{opt.name}</option>)}
-                    </select>
+            <div className='d-flex justify-content-center flex-column'>
+                <div className="btn-group btn-group-toggle">
+                    {Object.values(NETWORK).map(network => <div
+                        className={this.state.network === network ? "btn btn-secondary active" : "btn btn-secondary"}
+                        onClick={() => this.selectNetwork(network)} key={network} value={network}>{network}</div>)}
+                </div>
+                {this.state.network &&
+                    <div className="d-flex justify-content-center flex-column align-items-center">
+                        {this.state.addresses.length === 0 && <div className="lds-hourglass"></div>}
+                        {this.state.addresses.length > 0
+                            && this.state.addresses.map(opt => {
+                                return <div
+                                    className="btn btn-outline-warning btn-lg btn-block border-primary p-2 mt-2"
+                                    onClick={() => this.selectAddress(opt.id)} key={opt.id}>
+                                    {opt.name}
+                                </div>
+                            })
+                        }
+                    </div>
                 }
             </div>
         )
