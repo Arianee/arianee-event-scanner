@@ -4,7 +4,7 @@ import { Arianee, NETWORK } from '@arianee/arianeejs'
 import ValidationBlock from '../components/validationBlock';
 import { STATES } from './state'
 import { withRouter } from 'react-router-dom';
-
+import {getList,pushNewToken,reset,isEntered} from '../services/event-storage'
 class Scan extends Component {
 
     constructor(props) {
@@ -22,6 +22,10 @@ class Scan extends Component {
         console.log("network", network);
     }
 
+
+    createNewEvent=()=>{
+        reset();
+    }
 
     initialState = {
         qrcodeValid: STATES.none,
@@ -69,8 +73,11 @@ class Scan extends Component {
                 const isIdentiyOK = issuer && issuer.identity && issuer.identity.address === this.address;
                 const { isTrue } = await wallet.methods.isCertificateProofValid(link.certificateId, link.passphrase);
 
-                if (isContentOK && isIdentiyOK && isTrue) {
+                const isNotAlreadyEntered= isEntered(link.certificateId);
+
+                if (isContentOK && isIdentiyOK && isTrue&& isNotAlreadyEntered) {
                     this.canAccess(STATES.valid);
+                    pushNewToken(link.certificateId);
                 } else {
                     this.canAccess(STATES.unvalid);
                 }
@@ -94,6 +101,7 @@ class Scan extends Component {
                 <ValidationBlock state={this.state.qrcodeValid} title='qrcode' />
                 <ValidationBlock state={this.state.fetching} title='certificate' />
                 <ValidationBlock state={this.state.canAccess} title='can access' />
+                <button onClick={this.createNewEvent}>Create new event</button>
             </div>
         )
     }
