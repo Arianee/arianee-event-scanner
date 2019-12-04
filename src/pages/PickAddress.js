@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Arianee, NETWORK } from '@arianee/arianeejs'
 import { withRouter } from 'react-router-dom';
-
+import Loader from '../components/Loader'
 
 class PickAddress extends Component {
 
@@ -34,8 +34,8 @@ class PickAddress extends Component {
         const wallet1 = await wallet;
 
         const events = await wallet1.contracts.identityContract.getPastEvents("AddressApprovedAdded", { fromBlock: 1 });
-        //console.log(events)
         const approvedAddress = events.map(d => d.returnValues._newIdentity);
+
         const ids = approvedAddress.map(address => wallet1.methods.getIdentity(address));
 
         const promiseIDs = await Promise.all(ids);
@@ -58,7 +58,7 @@ class PickAddress extends Component {
                 </div>
                 {this.state.network &&
                     <div className="d-flex justify-content-center flex-column align-items-center">
-                        {this.state.addresses.length === 0 && <div className="lds-hourglass"></div>}
+                        {this.state.addresses.length === 0 && <Loader title='fetching identities'/>}
                         {this.state.addresses.length > 0
                             && this.state.addresses.map(opt => {
                                 return <div

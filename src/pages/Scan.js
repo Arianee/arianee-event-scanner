@@ -84,16 +84,16 @@ class Scan extends Component {
 
     render() {
         return (
-            <div>
+            <div >
                 <QrReader
                     delay={300}
                     onError={this.handleError}
                     onScan={this.handleScan}
                     style={{ width: '100%' }}
                 />
-                <ValidationBlock state={this.state.qrcodeValid} title='qrcode' />
-                <ValidationBlock state={this.state.fetching} title='certificate' />
-                <ValidationBlock state={this.state.canAccess} title='can access' />
+                <ValidationBlock state={this.state.qrcodeValid} title='Is Arianee QR code?' />
+                <ValidationBlock state={this.state.fetching} title='Can fetch certificate?' />
+                <ValidationBlock state={this.state.canAccess} title='Can you access the event?' />
             </div>
         )
     }
