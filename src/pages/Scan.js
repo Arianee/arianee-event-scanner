@@ -26,7 +26,8 @@ class Scan extends Component {
     initialState = {
         qrcodeValid: STATES.none,
         fetching: STATES.none,
-        canAccess: STATES.none
+        canAccess: STATES.none,
+        canAccessTitle:'Can you access the event?'
     }
 
     resetState = () => {
@@ -38,8 +39,24 @@ class Scan extends Component {
     }
 
 
-    canAccess = (canAccess) => {
-        this.setState({ canAccess })
+    canAccess = (canAccess,isContentOK , isIdentiyOK , isTrue,timestamp) => {
+        if(canAccess===STATES.valid){
+            this.setState({ canAccess })
+        }else{
+            console.log(canAccess,isContentOK , isIdentiyOK , isTrue,timestamp)
+            let message;
+            if(!isContentOK){
+                message='this certificate is not authentic';
+            }else if(!isIdentiyOK){
+                message='This certificate was not issued by this address';
+            }else if(!isTrue){
+                message=timestamp?`this proof was issued ${timestamp}`:`this proof does not exist`;
+            }
+
+            this.setState({ canAccess,
+                canAccessTitle:message
+            })
+        }
     }
 
     fetchingSuccess = (fetching) => {
@@ -67,12 +84,12 @@ class Scan extends Component {
 
                 const isContentOK = content && content.isAuthentic;
                 const isIdentiyOK = issuer && issuer.identity && issuer.identity.address === this.address;
-                const { isTrue } = await wallet.methods.isCertificateProofValid(link.certificateId, link.passphrase);
+                const { isTrue,timestamp } = await wallet.methods.isCertificateProofValid(link.certificateId, link.passphrase);
 
                 if (isContentOK && isIdentiyOK && isTrue) {
                     this.canAccess(STATES.valid);
                 } else {
-                    this.canAccess(STATES.unvalid);
+                    this.canAccess(STATES.unvalid,isContentOK , isIdentiyOK , isTrue,timestamp);
                 }
             }
         }
@@ -106,7 +123,7 @@ class Scan extends Component {
 */}
                 <ValidationBlock state={this.state.qrcodeValid} title='Is Arianee QR code?' />
                 <ValidationBlock state={this.state.fetching} title='Can fetch certificate?' />
-                <ValidationBlock state={this.state.canAccess} title='Can you access the event?' />
+                <ValidationBlock state={this.state.canAccess} title={this.state.canAccessTitle} />
             </div>
             </div>
 
