@@ -17,6 +17,18 @@ body {
   }
 }
 
+.img-arianee{
+  height:30px;
+  width:30px;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  opacity: 0.8;
+  > img{
+    height: 100%;
+    width:100%;
+  }
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;

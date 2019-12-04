@@ -19,6 +19,7 @@ export default function App() {
                 <Route exact path="/scan/:address/:network" >
                     <Scan />
                 </Route>
+            <div className='img-arianee'><img src="https://static1.squarespace.com/static/5c489ebf7c9327393b1ab84b/t/5dadd630218aa17443cf2f91/1556807778012/icon-arianee-white.png"/> </div>
         </Router>
     );
 }
