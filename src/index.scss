@@ -9,67 +9,92 @@ $font-color:$color4;
 
 body {
   margin: 0;
+
   font-family: 'Roboto', sans-serif;
  background-color:$background-color;
+  .main-font{
+    $font-color:$color4;
+  }
 }
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
-.lds-hourglass {
+.lds-circle {
   display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
+  transform: translateZ(1px);
 }
-.lds-hourglass:after {
-  background: cadetblue;
-  content: " ";
-  display: block;
+.lds-circle > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  width: 0;
-  height: 0;
-  margin: 8px;
-  box-sizing: border-box;
-  border: 32px solid #fff;
-  border-color: #fff transparent #fff transparent;
-  animation: lds-hourglass 1.2s infinite;
+  background: #fff;
+  animation: lds-circle 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
-@keyframes lds-hourglass {
+@keyframes lds-circle {
+  0%, 100% {
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
   0% {
-    transform: rotate(0);
-    animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    transform: rotateY(0deg);
   }
   50% {
-    transform: rotate(900deg);
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: rotateY(1800deg);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
   }
   100% {
-    transform: rotate(1800deg);
+    transform: rotateY(3600deg);
   }
 }
 
 
-.validation-block{
+.scan.scan--explanation{
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   color: $font-color;
-  margin:20px;
-  padding:20px;
+  text-align: center;
+  .scan--explanation--icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: $font-color 1px solid;
+    margin-left:0.2em;
+    margin-right: 0.2em;
+    height:1.3em;
+    width:1.3em;
+    border-radius: 100%;
+  }
+}
+
+.validation-block{
+  $height: 60px;
+  color: $font-color;
   border: transparentize($font-color,0.8) 1px solid;
   border-radius: 5px;
+  padding-left:15px;
+  padding-right:15px;
+  margin:10px;
   align-items: center;
-  height:120px;
+  height:$height;
   display: flex;
   flex-direction: row;
   .validation-block--result{
-    height:80px;
-    weight:80px;
+    height:$height * 0.6;
+    width:$height * 0.6;
 
     border: transparentize($font-color,0.3) 1px solid;
     border-radius: 5px;
     img {
-      height:80%;
-      weight:80%;
+      height:$height *0.4;
+      weight:$height *0.4;
     }
   }
 }

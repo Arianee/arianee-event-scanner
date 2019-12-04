@@ -84,17 +84,32 @@ class Scan extends Component {
 
     render() {
         return (
-            <div >
+            <div>
                 <QrReader
                     delay={300}
                     onError={this.handleError}
                     onScan={this.handleScan}
                     style={{ width: '100%' }}
                 />
+                <div className="container">
+
+                <div className="d-flex justify-content-center flex-column">
+                    <small className="scan scan--explanation">
+                        <span className='scan--explanation--icon'>?</span>
+                        Generate a proof of ownership from wallet and scan
+                        it</small>
+
+                </div>
+                {/*<ValidationBlock state={STATES.valid} title='Is Arianee QR code?' />
+                <ValidationBlock state={STATES.unvalid} title='Is Arianee QR code?' />
+                <ValidationBlock state={STATES.loading} title='Is Arianee QR code?' />
+*/}
                 <ValidationBlock state={this.state.qrcodeValid} title='Is Arianee QR code?' />
                 <ValidationBlock state={this.state.fetching} title='Can fetch certificate?' />
                 <ValidationBlock state={this.state.canAccess} title='Can you access the event?' />
             </div>
+            </div>
+
         )
     }
 }

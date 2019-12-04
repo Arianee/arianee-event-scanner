@@ -19,8 +19,10 @@ export default function ValidationBlock({state,title}){
 
   return  <div className='row validation-block'>
       <div className='col-8'>{title}</div>
-        <div className='col-4 validation-block--result d-flex justify-content-center flex-column'>
-            {compFromState()}
+        <div className='col-4  d-flex justify-content-center  align-items-center'>
+            <div className="d-flex justify-content-center  align-items-center validation-block--result">
+                {compFromState()}
+            </div>
         </div>
     </div>
 }
