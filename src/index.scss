@@ -4,14 +4,15 @@ $color3: rgba(153, 100, 61, 1);
 $color4: rgba(255, 241, 175, 1);
 $color5: rgba(99, 101, 103, 1);
 
-$background-color:$color2;
+$background-color:#444;
 $font-color:$color4;
 
 body {
   margin: 0;
 
   font-family: 'Roboto', sans-serif;
- background-color:$background-color;
+  background-color:$background-color;
+
   .main-font{
     $font-color:$color4;
   }
@@ -93,6 +94,7 @@ code {
   border-radius: 5px;
   padding-left:15px;
   padding-right:15px;
+  font-size: 2.5vh;
   margin:10px;
   align-items: center;
   height:$height;
