@@ -104,6 +104,7 @@ class Scan extends Component {
             <div>
                 <QrReader
                     delay={300}
+                    facingMode='user'
                     onError={this.handleError}
                     onScan={this.handleScan}
                     style={{ width: '100%' }}
