@@ -69,7 +69,8 @@ class Scan extends Component {
             this.resetState()
             this.validQrCode(STATES.loading);
             const wallet = await this.wallet;
-            let link
+            let link;
+
             try {
                 link = wallet.utils.readLink(qrCodeData);
                 this.validQrCode(STATES.valid);
@@ -79,7 +80,7 @@ class Scan extends Component {
             }
             if (link) {
                 this.fetchingSuccess(STATES.loading);
-                const { content, issuer } = await wallet.methods.getCertificate(link.certificateId, link.passphrase, { content: true, issuer: true });
+                const { content, issuer } = await wallet.methods.getCertificate(link.certificateId, link.passphrase, { content: true, issuer: {waitingIdentity:true} });
                 this.fetchingSuccess(STATES.valid);
 
                 const isContentOK = content && content.isAuthentic;
