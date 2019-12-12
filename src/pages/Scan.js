@@ -60,7 +60,7 @@ class Scan extends Component {
     }
 
     fetchingSuccess = (fetching) => {
-        this.setState({ fetching })
+        this.setState({ fetching,canAccess:STATES.loading })
     }
 
 
@@ -80,17 +80,16 @@ class Scan extends Component {
             }
             if (link) {
                 this.fetchingSuccess(STATES.loading);
-                const { content, issuer } = await wallet.methods.getCertificate(link.certificateId, link.passphrase, { content: true, issuer: {waitingIdentity:true} });
+                const { issuer } = await wallet.methods.getCertificate(link.certificateId, link.passphrase, { issuer: {waitingIdentity:true} });
                 this.fetchingSuccess(STATES.valid);
 
-                const isContentOK = content && content.isAuthentic;
                 const isIdentiyOK = issuer && issuer.identity && issuer.identity.address === this.address;
                 const { isTrue,timestamp } = await wallet.methods.isCertificateProofValid(link.certificateId, link.passphrase);
 
-                if (isContentOK && isIdentiyOK && isTrue) {
+                if (true && isIdentiyOK && isTrue) {
                     this.canAccess(STATES.valid);
                 } else {
-                    this.canAccess(STATES.unvalid,isContentOK , isIdentiyOK , isTrue,timestamp);
+                    this.canAccess(STATES.unvalid,true , isIdentiyOK , isTrue,timestamp);
                 }
             }
         }
