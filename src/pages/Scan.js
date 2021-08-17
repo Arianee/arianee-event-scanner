@@ -83,7 +83,7 @@ class Scan extends Component {
             <div className='d-flex flex-column full-height-screen' id='picture-container'>
                 <QrReader
                     delay={300}
-                    facingMode='user'
+                    facingMode='environment'
                     onError={this.handleError}
                     onScan={this.handleScan}
                     style={{ width: '100%' }}
