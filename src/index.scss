@@ -122,3 +122,7 @@ code {
   height: 100vh;
 }
 
+.debug-container{
+  text-align: center;
+  color:lighten($background-color,10)
+}

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import QrReader from 'react-qr-reader'
 import { Arianee, NETWORK } from '@arianee/arianeejs'
 import ValidationBlock from '../components/validationBlock';
-import { STATES } from './state'
+import {STATES, ErrorCodeMessage} from './state'
 import { withRouter } from 'react-router-dom';
 
 class Scan extends Component {
@@ -25,7 +25,8 @@ class Scan extends Component {
 
     initialState = {
         validityState: STATES.none,
-        processing: false
+        processing: false,
+        message: ErrorCodeMessage.none
     }
 
     resetState = () => {
@@ -45,8 +46,10 @@ class Scan extends Component {
 
             try {
                 link = wallet.utils.readLink(qrCodeData);
+                console.log("qrcode: link valid")
             } catch (e) {
-                this.setState({validityState: STATES.unvalid});
+                console.log("qrcode: link not valid");
+                this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.linkUnvalid});
             }
             if (link) {
                 const { issuer } = await wallet.methods.getCertificate(link.certificateId, link.passphrase, { issuer: {waitingIdentity:true} });
@@ -55,15 +58,20 @@ class Scan extends Component {
                 const { isTrue,timestamp } = await wallet.methods.isCertificateProofValid(link.certificateId, link.passphrase);
 
                 if (true && isIdentiyOK && isTrue) {
+                    console.log('qrcode ');
                     this.setState({validityState: STATES.valid});
-                } else {
-                    this.setState({validityState: STATES.unvalid});
+                } else if(isIdentiyOK===false){
+                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.notFromBrand});
+                }else if(isTrue===false){
+                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.tooOld});
+                }else {
+                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.unknown});
                 }
                 if (this.timer) {
                     clearTimeout(this.timer);
                 }
             }
-            this.timer = setTimeout(() => this.resetState(), 5000)
+            this.timer = setTimeout(() => this.resetState(), 3000)
         }
     }
 
@@ -82,6 +90,7 @@ class Scan extends Component {
                     style={{ width: '100%' }}
                 />
                 <ValidationBlock state={this.state.validityState}/>
+                <div className='debug-container'>{this.state.message}</div>
             </div>
 
         )
