@@ -58,7 +58,6 @@ class Scan extends Component {
                 const { isTrue,timestamp } = await wallet.methods.isCertificateProofValid(link.certificateId, link.passphrase);
 
                 if (true && isIdentiyOK && isTrue) {
-                    console.log('qrcode ');
                     this.setState({validityState: STATES.valid});
                 } else if(isIdentiyOK===false){
                     this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.notFromBrand});

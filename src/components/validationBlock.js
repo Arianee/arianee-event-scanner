@@ -6,7 +6,7 @@ export default function ValidationBlock({state}){
 
     const compFromState=()=>{
         if(state===STATES.none){
-            return  <div className='d-flex justify-content-center'>Scan a qr code</div>
+            return  <div className='d-flex justify-content-center'>Scan a proof of ownership qr code</div>
         }else if(state===STATES.valid){
             return <img class='validation-block--image' src='/img/valid.png'/>
         }else if(state===STATES.unvalid){
