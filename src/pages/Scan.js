@@ -16,7 +16,7 @@ class Scan extends Component {
         const network = this.props.match.params.network || NETWORK.mainnet;
 
         this.wallet = new Arianee().init(network)
-            .then(aria => aria.fromRandomMnemonic());
+            .then(aria => aria.readOnlyWallet());
 
         console.log("address", this.address);
         console.log("network", network);
@@ -24,39 +24,12 @@ class Scan extends Component {
 
 
     initialState = {
-        qrcodeValid: STATES.none,
-        fetching: STATES.none,
-        canAccess: STATES.none,
-        canAccessTitle:'Can you access the event?'
+        validityState: STATES.none,
+        processing: false
     }
 
     resetState = () => {
         this.setState(this.initialState)
-    }
-
-    validQrCode = (qrcodeValid) => {
-        this.setState({ qrcodeValid })
-    }
-
-
-    canAccess = (canAccess,isContentOK , isIdentiyOK , isTrue,timestamp) => {
-        if(canAccess===STATES.valid){
-            this.setState({ canAccess })
-        }else{
-            console.log(canAccess,isContentOK , isIdentiyOK , isTrue,timestamp)
-            let message;
-            if(!isContentOK){
-                message='this certificate is not authentic';
-            }else if(!isIdentiyOK){
-                message='This certificate was not issued by this address';
-            }else if(!isTrue){
-                message=timestamp?`this proof was issued ${timestamp}`:`this proof does not exist`;
-            }
-
-            this.setState({ canAccess,
-                canAccessTitle:message
-            })
-        }
     }
 
     fetchingSuccess = (fetching) => {
@@ -65,33 +38,32 @@ class Scan extends Component {
 
 
     handleScan = async qrCodeData => {
-        if (qrCodeData) {
-            this.resetState()
-            this.validQrCode(STATES.loading);
+        if (qrCodeData && this.state.processing === false) {
+            this.setState({validityState: STATES.loading, processing: true});
             const wallet = await this.wallet;
             let link;
 
             try {
                 link = wallet.utils.readLink(qrCodeData);
-                this.validQrCode(STATES.valid);
             } catch (e) {
-                this.validQrCode(STATES.unvalid);
-                this.canAccess(false);
+                this.setState({validityState: STATES.unvalid});
             }
             if (link) {
-                this.fetchingSuccess(STATES.loading);
                 const { issuer } = await wallet.methods.getCertificate(link.certificateId, link.passphrase, { issuer: {waitingIdentity:true} });
-                this.fetchingSuccess(STATES.valid);
 
                 const isIdentiyOK = issuer && issuer.identity && issuer.identity.address === this.address;
                 const { isTrue,timestamp } = await wallet.methods.isCertificateProofValid(link.certificateId, link.passphrase);
 
                 if (true && isIdentiyOK && isTrue) {
-                    this.canAccess(STATES.valid);
+                    this.setState({validityState: STATES.valid});
                 } else {
-                    this.canAccess(STATES.unvalid,true , isIdentiyOK , isTrue,timestamp);
+                    this.setState({validityState: STATES.unvalid});
+                }
+                if (this.timer) {
+                    clearTimeout(this.timer);
                 }
             }
+            this.timer = setTimeout(() => this.resetState(), 5000)
         }
     }
 
@@ -101,7 +73,7 @@ class Scan extends Component {
 
     render() {
         return (
-            <div>
+            <div className='d-flex flex-column full-height-screen' id='picture-container'>
                 <QrReader
                     delay={300}
                     facingMode='user'
@@ -109,23 +81,7 @@ class Scan extends Component {
                     onScan={this.handleScan}
                     style={{ width: '100%' }}
                 />
-                <div className="container">
-
-                <div className="d-flex justify-content-center flex-column">
-                    <small className="scan scan--explanation">
-                        <span className='scan--explanation--icon'>?</span>
-                        Generate a proof of ownership from wallet and scan
-                        it</small>
-
-                </div>
-                {/*<ValidationBlock state={STATES.valid} title='Is Arianee QR code?' />
-                <ValidationBlock state={STATES.unvalid} title='Is Arianee QR code?' />
-                <ValidationBlock state={STATES.loading} title='Is Arianee QR code?' />
-*/}
-                <ValidationBlock state={this.state.qrcodeValid} title='Is Arianee QR code?' />
-                <ValidationBlock state={this.state.fetching} title='Can fetch certificate?' />
-                <ValidationBlock state={this.state.canAccess} title={this.state.canAccessTitle} />
-            </div>
+                <ValidationBlock state={this.state.validityState}/>
             </div>
 
         )
