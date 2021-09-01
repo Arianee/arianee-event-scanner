@@ -8,9 +8,9 @@ export default function ValidationBlock({state}){
         if(state===STATES.none){
             return  <div className='d-flex justify-content-center'>Scan a proof of ownership qr code</div>
         }else if(state===STATES.valid){
-            return <img class='validation-block--image' src='/img/valid.png'/>
+            return <img className='validation-block--image' src='/img/valid.png'/>
         }else if(state===STATES.unvalid){
-            return <img class='validation-block--image' src='/img/unvalid.png'/>
+            return <img className='validation-block--image' src='/img/unvalid.png'/>
         }else if(state===STATES.loading){
           return <Loader />
 
@@ -21,4 +21,5 @@ export default function ValidationBlock({state}){
   return  <div className='d-flex flex-column justify-content-center align-items-center' style={{flex:1}}>
       {compFromState()}
     </div>
+    
 }

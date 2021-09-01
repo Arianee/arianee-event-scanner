@@ -12,7 +12,7 @@ class Scan extends Component {
         this.state = this.initialState;
         this.address = this.props.match.params.address;
 
-        const searchParams = new URLSearchParams(window.location.search)
+        this.searchParams = window.location.search.substr(1);
         const network = this.props.match.params.network || NETWORK.mainnet;
 
         this.wallet = new Arianee().init(network)
@@ -20,6 +20,7 @@ class Scan extends Component {
 
         console.log("address", this.address);
         console.log("network", network);
+        console.log("searchParams",this.searchParams)
     }
 
 
@@ -31,6 +32,7 @@ class Scan extends Component {
 
     resetState = () => {
         this.setState(this.initialState)
+
     }
 
     fetchingSuccess = (fetching) => {
@@ -39,8 +41,8 @@ class Scan extends Component {
 
 
     handleScan = async qrCodeData => {
-        if (qrCodeData && this.state.processing === false) {
-            this.setState({validityState: STATES.loading, processing: true});
+        if (qrCodeData && this.state.processing !== true) {
+            this.setState({validityState: STATES.loading, message:ErrorCodeMessage.loading, processing: true});
             const wallet = await this.wallet;
             let link;
 
@@ -49,28 +51,45 @@ class Scan extends Component {
                 console.log("qrcode: link valid")
             } catch (e) {
                 console.log("qrcode: link not valid");
-                this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.linkUnvalid});
+                this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.linkUnvalid, processing: false});
             }
             if (link) {
-                const { issuer } = await wallet.methods.getCertificate(link.certificateId, link.passphrase, { issuer: {waitingIdentity:true} });
+                const { issuer, content } = await wallet.methods.getCertificate(link.certificateId, link.passphrase);
+
 
                 const isIdentiyOK = issuer && issuer.identity && issuer.identity.address === this.address;
                 const { isTrue,timestamp } = await wallet.methods.isCertificateProofValid(link.certificateId, link.passphrase);
 
-                if (true && isIdentiyOK && isTrue) {
-                    this.setState({validityState: STATES.valid});
+                let searchParamsIsTrue;
+
+                if (this.searchParams) {
+                    if (JSON.stringify(content).indexOf(this.searchParams)>-1) {
+                        searchParamsIsTrue = true;
+                    } else {
+                        searchParamsIsTrue = false;
+                    }
+
+                } else {
+                    searchParamsIsTrue = true;
+                }
+
+
+                if (true && isIdentiyOK && isTrue && searchParamsIsTrue) {
+                    this.setState({validityState: STATES.valid, message:ErrorCodeMessage.success, processing: false});
+                } else if(searchParamsIsTrue===false){
+                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.notGoodCertificate, processing: false});
                 } else if(isIdentiyOK===false){
-                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.notFromBrand});
+                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.notFromBrand, processing: false});
                 }else if(isTrue===false){
-                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.tooOld});
+                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.tooOld, processing: false});
                 }else {
-                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.unknown});
+                    this.setState({validityState: STATES.unvalid, message:ErrorCodeMessage.unknown, processing: false});
                 }
                 if (this.timer) {
                     clearTimeout(this.timer);
                 }
             }
-            this.timer = setTimeout(() => this.resetState(), 3000)
+            //this.timer = setTimeout(() => this.resetState(), 3000)
         }
     }
 
