@@ -47,7 +47,7 @@ class Scan extends Component {
             let link;
 
             try {
-                link = wallet.utils.readLink(qrCodeData);
+                link = wallet.utils.readLink(qrCodeData, false);
                 console.log("qrcode: link valid")
             } catch (e) {
                 console.log("qrcode: link not valid");
